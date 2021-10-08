@@ -5,6 +5,7 @@ from selenium.webdriver.common.keys import Keys
 import time
 import pyautogui
 
+
 def Clicker(target_url, pw):
     driver.get(target_url)
     time.sleep(1)
@@ -15,45 +16,49 @@ def Clicker(target_url, pw):
     time.sleep(1)
 
     menu = 'k'
-    x = 70
+    x_start = 70
+    x_end = 1350
     y = 935
-    x_start = 70.0
-    x_one = float(4794 / (1350 - 70))
-    print(x_one)
-    while menu:
+    while menu != 'e':
         menu = input()
+        i = x_end
         timeRangeCurrent = driver.find_element_by_class_name('vjs-time-range-current').text
-        minute = int(timeRangeCurrent[3]) * 10 + int(timeRangeCurrent[4])
-        second = int(timeRangeCurrent[6]) * 10 + int(timeRangeCurrent[7])
-        second += minute * 60.0
-        if menu == 'e':
-            break
-        elif menu == 'j':
-            x = (x_start + (second - 10) / x_one + 3)  # +3은 그냥 수동 보정
-            pyautogui.moveTo(x, y)
-            pyautogui.click()
+        print(timeRangeCurrent)
+        cur_minute = int(timeRangeCurrent[3]) * 10 + int(timeRangeCurrent[4])
+        cur_second = int(timeRangeCurrent[6]) * 10 + int(timeRangeCurrent[7])
+        if menu == 'j':
+            while i <= x_end:
+                pyautogui.moveTo(i, y)
+                tooltip = driver.find_element_by_xpath('//*[@id="vjs_video_3"]/div[4]/div[1]/div[1]/div[2]/div').text
+                tip_minute = int(tooltip[2]) * 10 + int(tooltip[3])
+                tip_second = int(tooltip[5]) * 10 + int(tooltip[6])
+                print("cur: ", timeRangeCurrent)
+                print("tip: ", tooltip)
+                if tip_minute == cur_minute and cur_second - 15 <= tip_second < cur_second - 5:
+                    break
+                elif cur_second <= 15 and tip_minute == cur_minute - 1 and 45 <= tip_second <= 55:
+                    break
+
+                i -= 1
+                if (int(tooltip[0]) == 1 and cur_minute <= 55) or tip_minute - cur_minute >= 3:
+                    i -= 30
         elif menu == 'l':
-            x = (x_start + (second + 10) / x_one + 3)
-            pyautogui.moveTo(x, y)
-            pyautogui.click()
+            while i <= x_end:
+                pyautogui.moveTo(i, y)
+                tooltip = driver.find_element_by_xpath('//*[@id="vjs_video_3"]/div[4]/div[1]/div[1]/div[2]/div').text
+                tip_minute = int(tooltip[2]) * 10 + int(tooltip[3])
+                tip_second = int(tooltip[5]) * 10 + int(tooltip[6])
+                print("cur: ", timeRangeCurrent)
+                print("tip: ", tooltip)
+                if tip_minute == cur_minute and cur_second + 5 < tip_second <= cur_second + 15:
+                    break
+                elif cur_second <= 15 and tip_minute == cur_minute + 1 and 5 <= tip_second <= 15:
+                    break
 
-    '''
-    print(pyautogui.position())
-    
-    pyautogui.moveTo(70, 935)
-    pyautogui.click()
-    point_start = tooltip.text
-    print(point_start)
-
-    pyautogui.moveTo(1350, 935)
-    pyautogui.click()
-    point_end = tooltip.text
-    print(point_end)
-
-    # 1(x)에 3.8(초), 소수는 안 됨
-    # 3.8초의 원리: 영상 길이 / 바 길이 = 4794(초) / 1280(X) = 3.745
-     영상과 프로그레스 바 길이 사이의 비율 관계를 이용해 현재 재생 시각 10초 전후의 X 좌표를 계산해서 이동하는 방식
-    '''
+                i -= 1
+                if (int(tooltip[0]) == 1 and cur_minute <= 55) or tip_minute - cur_minute >= 3:
+                    i -= 30
+        pyautogui.click()
 
     # driver.close()
 
