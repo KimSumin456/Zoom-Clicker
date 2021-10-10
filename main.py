@@ -103,13 +103,15 @@ def Clicker():
         else:
             continue
         pyautogui.click()
-        pyautogui.hotkey('alt', 'tab') # 다시 ZoomClicker 프로그램 창 띄우기
         time.sleep(1)
+        me.activate() # 다시 이 프로그램(ZoomClicker) 창 맨 앞으로 띄우기
         pyautogui.moveTo(x_end, y) # 그냥 내가 타임 테이블 계속 보고 싶어서
 
     driver.close()
     return 0
 
+
+me = pyautogui.getActiveWindow()
 
 options = Options()
 options.add_argument('incognito')  # 시크릿 모드 실행
@@ -120,7 +122,5 @@ driver = Chrome("chromedriver_win32\chromedriver", options=options)
 OpenZoom(
     'https://ajou-ac-kr.zoom.us/rec/play/0NfxxPyRNHYklG9rQdKJIgGuHulsSUeMRChCOyJ7caOXxWiE-rUJOuC0NtgyoAWCDpZTSvmY4njhfBjN.UcPBJoQ-MYxgLRAE?continueMode=true&_x_zm_rtaid=XzEet155S32YMo6roMZXAw.1633655817998.cb8abb1a013236c89248563d3c7d96ca&_x_zm_rhtaid=114',
     '3m!CnemD')
-
 # CrawlTimeline()
-
 Clicker()
